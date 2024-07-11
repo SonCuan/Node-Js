@@ -1,17 +1,36 @@
 //khởi tạo server
 const express = require('express'); //require module express
+const fs = require('fs');
 const app = new express();
 const port = 3000; //khai báo cổng sẽ chạy server
 var bodyParser = require('body-parser');
 const multer = require('multer');
+const mysql = require('mysql'); // noi ket noi co so du lieu
+
+// Phan ket noi co so du lieu mySQl
+const db = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'web503'
+});
+db.connect((err) => {
+    if (err) {
+        console.log(err);
+    } else {
+        console.log('ket noi thanh cong');
+    }
+});
+// End phan ket noi co so du lieu mySQl
+
 // Phan luu tru anh 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-      cb(null, '/images')
+      cb(null, 'public/images') // khai bao duong dan thu muc luu tru file 
     },
     filename: function (req, file, cb) {
-      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-      cb(null, file.fieldname + '-' + uniqueSuffix)
+    //   const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+      cb(null, `${Date.now()}-${file.originalname}`)  // luu tru file kem theo thoi diem upload 
     }
   })
   
@@ -19,6 +38,8 @@ const upload = multer({ storage: storage })
 // End phan luu anh 
 
 //khai báo sử dụng ejs
+
+app.use(express.static('public'));
 app.set('view engine', 'ejs');
 app.set('views', './views');
 app.use(bodyParser.urlencoded({extended: true}));
@@ -28,26 +49,12 @@ app.get('/list', (req,res,next) => {
     //req.params: nằm trong url
     //req.query: ngăn cách bằng dấu ?query1=x&query2=y
     //req.body gửi qua form 
-    let product = [{
-        id: 1,
-        name: 'T-Shirt',
-        price: 1000
-    },
-    {
-        id: 2,
-        name: 'T-Shirt 2',
-        price: 2000
-    },
-    {
-        id: 3,
-        name: 'T-Shirt 3',
-        price: 3000
-    }];
 
-    res.render('list', 
-        {
-            products: product
-        });
+    let sql = 'SELECT * FROM products';
+    db.query(sql, (err, results) => {
+        if (err) throw err;
+        res.render('list', {pros : results} );
+    });
 });
 
 app.get('/create', (req,res,next) => {
@@ -58,7 +65,20 @@ app.get('/create', (req,res,next) => {
 app.listen(port, () => {
     console.log(`SV dang chay o port ${port}`);
 })
-
+// Phan luu tru anh
+app.post('/upload', upload.single('images'), (req,res,next) => {
+    res.send('Upload thanh cong');
+})
+// End phan luu anh
+app.get('/delete/:img' , (req,res,next) => {
+    const img = req.params.img;
+    if(img ) { 
+        fs.unlink('public/images/' + img, (err) => {    
+            if (err) throw err;
+        });
+        res.send('Xoa thanh cong');
+    }
+})
 app.post('/create', (req,res,next) => {
     let a = req.body.a;
     let b = req.body.b;
@@ -89,8 +109,4 @@ app.post('/create', (req,res,next) => {
         }
     }
  
-})
-
-app.post('/upload', upload.single('images'), (req, res) => {
-    
 })
