@@ -4,16 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <script>
+        function uploadFile() {
+            return confirm("Da upload thanh cong");
+        }
+        function DeleteProduct(id) {
+            return confirm("Da xoa thanh cong");
+        }
+    </script>
 </head>
 <body>
-    <form action="" method="post" enctype="multipart/form-data">
-        <div>
-            <label for="name">A</label>
-            <input type="text" name="a" >
+    <form action="/save" method="post" enctype="multipart/form-data" onsubmit="return uploadFile()">
+        <div class="mb-3">
+            <label for="name">Title</label>
+            <input type="text" name="name" >
         </div>
         <div>
-            <label for="price">B</label>
-            <input type="text" name="b" >
+            <label for="price">Price</label>
+            <input type="text" name="price" >
         </div>
         <div>
             <label for="images" >Images</label>
@@ -26,9 +34,9 @@
     <br>
     <br>
 
-    <form action="/upload" method="post" enctype="multipart/form-data">
+    <!-- <form action="/upload" method="post" enctype="multipart/form-data">
         <input type="file" name="images" > <br>
         <input type="submit" value="upload">
-    </form>
+    </form> -->
 </body>
 </html>

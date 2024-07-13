@@ -79,34 +79,56 @@ app.get('/delete/:img' , (req,res,next) => {
         res.send('Xoa thanh cong');
     }
 })
-app.post('/create', (req,res,next) => {
-    let a = req.body.a;
-    let b = req.body.b;
-    let c = req.body.c;
+app.post('/save', upload.single('images'), (req,res,next) => {
+    let name = req.body.name;
+    let price = req.body.price;
+    let img = req.file.filename;
+    let sql = `INSERT INTO products (name, price, images) VALUES ('${name}', '${price}', '${img}')`;
+    db.query(sql, (err, results) => {
+        if (err){
+            console.log(err);
+        }else {
+            res.redirect('/list');
+        }
+    });
+})
+// Phan edit products 
+app.get("/update/:id" , (req,res,next) => {
+    const id = req.params.id;
+    let sql = `SELECT * FROM products WHERE id =?`;
+    db.query(sql, [id] , (err, results) => {
+        if (err) throw err;
+        if (results.length > 0) {
+            res.render('update', {products : results[0]});
+        }else { 
+            res.send("Khong tim thay san pham");
+        }
+    })
+})
+app.post("/update/:id" , upload.single('images'), (req,res,next) => {
+    const id = req.params.id;
+    let name = req.body.name;
+    let price = req.body.price;
+    let images = req.file.filename;
 
-    if (a == 0) {     
-        if (b != 0) {
-            let x = -c / b;
-            res.send(`Phuong trình có 1 nghiệm: x = ${x}`);
-        } else {
-            if (c == 0) {           
-                res.send('Phuong trình co vô so nghiem');
-            } else {
-              res.send('Phuong trinh vo nghiem');
-            }
+
+    console.log(id, name, price, images);
+    let sql = `UPDATE products SET name = '${name}', price = '${price}', images = '${images}' WHERE id = ${id}`;
+    db.query(sql, (err, results) => {
+        if (err) throw err;
+        console.log(`Update ${results.affectedRows} row(s)`);
+        res.redirect('/list');
+    })
+})
+app.get("/delete/:id" , (req,res,next) => {
+    const id = req.params.id;
+    console.log(id);
+    const sql = `DELETE FROM products WHERE id = ${id}`;
+    db.query(sql, [id] , (err, results )=> { 
+        if(err) {
+            console.log(err);
+        }else { 
+            res.redirect('/list');
         }
-    }else{
-        let delta = b * b - 4 * a * c;
-        if (delta > 0) {
-            let x1 = (-b + Math.sqrt(delta)) / (2 * a);
-            let x2 = (-b - Math.sqrt(delta)) / (2 * a);
-            res.send(`Phuong trinh co 2 nghiem phan biet: x1 = ${x1}, x2 = ${x2}`);
-        } else if (delta === 0) {
-            let x = -b / (2 * a);
-            res.send(`Phuong trinh co nghiem kep: x = ${x}`);
-        } else {
-            res.send('Phuong trinh vo nghiem');
-        }
-    }
- 
+    })
 })
