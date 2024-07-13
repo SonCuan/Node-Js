@@ -70,15 +70,6 @@ app.post('/upload', upload.single('images'), (req,res,next) => {
     res.send('Upload thanh cong');
 })
 // End phan luu anh
-app.get('/delete/:img' , (req,res,next) => {
-    const img = req.params.img;
-    if(img ) { 
-        fs.unlink('public/images/' + img, (err) => {    
-            if (err) throw err;
-        });
-        res.send('Xoa thanh cong');
-    }
-})
 app.post('/save', upload.single('images'), (req,res,next) => {
     let name = req.body.name;
     let price = req.body.price;

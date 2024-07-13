@@ -32,7 +32,7 @@
                     <td><%= item.price %></td>
                     <td><img width="100px" height="100px" src="images/<%=item.images%>" alt=""></td>
                     <td><button class="btn btn-warning"><a href="/update/<%=item.id%>">Edit</a></button> 
-                        <button class="btn btn-danger" onclick="return confirm('Ban co muon xoa khong ?')" href="/delete/<%=item.id%>">Delete</button>
+                        <a href="/delete/<%= item.id %>"><button class="btn btn-danger" onclick="return confirm('Ban co muon xoa khong ?')">delete</button></a>
                     </td>
                 </tr>
                <% }); %>
