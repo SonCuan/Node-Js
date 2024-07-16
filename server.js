@@ -61,10 +61,6 @@ app.get('/create', (req,res,next) => {
     res.render('create');
 })
 
-
-app.listen(port, () => {
-    console.log(`SV dang chay o port ${port}`);
-})
 // Phan luu tru anh
 app.post('/upload', upload.single('images'), (req,res,next) => {
     res.send('Upload thanh cong');
@@ -111,6 +107,7 @@ app.post("/update/:id" , upload.single('images'), (req,res,next) => {
         res.redirect('/list');
     })
 })
+// Phan xoa san pham 
 app.get("/delete/:id" , (req,res,next) => {
     const id = req.params.id;
     console.log(id);
@@ -122,4 +119,8 @@ app.get("/delete/:id" , (req,res,next) => {
             res.redirect('/list');
         }
     })
+})
+// End phan xoa san pham
+app.listen(port, () => {
+    console.log(`SV dang chay o port ${port}`);
 })
