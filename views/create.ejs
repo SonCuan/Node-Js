@@ -21,10 +21,37 @@
         function uploadFile() {
             return confirm("Da upload thanh cong");
         }
+        function validateForm() {
+            var name = document.getElementById("name").value.trim();
+            var price = document.getElementById("price").value.trim();
+            var images = document.getElementById("images").value.trim();
+
+            if (name === "") {
+                alert("Vui long nhap ten san pham");
+                return false;
+            }
+
+            if (price === "") {
+                alert("Vui long nhap gia san pham ");
+                return false;
+            }
+
+            if (isNaN(price)) {
+                alert("Gia phai la so");
+                return false;
+            }
+
+            if (images === "") {
+                alert("Vui long chon tep anh ");
+                return false;
+            }
+
+            return true;
+        }
     </script>
 </head>
 <body>
-    <form action="/save" method="post" enctype="multipart/form-data" onsubmit="return uploadFile()">
+    <form action="/save" method="post" enctype="multipart/form-data" onsubmit="return validateForm()" onsubmit="return uploadFile()">
         
         <div class="mb-3">
           <label for="name" class="form-label">Name</label>
