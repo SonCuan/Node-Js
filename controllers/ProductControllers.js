@@ -4,7 +4,16 @@ const Product = require('../models/ProductModels.js');
 exports.getList = async (req, res) => {
     try {
         const products = await Product.find();
-        res.render("list", {pros:products});
+        if(!products.length === 0 ) {
+            return res.status(400).json({
+                message : "Khong tim thay san pham",
+                
+            })
+        }
+        return res.status(200).json({
+            message : "Tim thay san pham thanh cong",
+            data : products,
+        })
     } catch (error) {
         console.log(error);
     }
@@ -14,11 +23,20 @@ exports.getList = async (req, res) => {
 
 exports.getDetail = async (req, res) => { 
     try {
-        const id = req.params.id;
-        const product = await Product.findById(id);
-        res.render('update' , {product:product});
+        const product = await Product.findById(req.params.id);
+        if(!product) { 
+            return res.status(404).json({
+                message : "Khong tim thay san pham",
+            })
+        }
+        return res.status(200).json({
+            message : "Tim thay san pham thanh cong",
+            data : product,
+        })
     } catch (error) {
-        console.log(error);
+       return res.status(500).json({
+        message : error.message
+       })
     }
 }
 
@@ -33,40 +51,68 @@ exports.save = async ( req, res ) => {
     const newProduct = {
         name : req.body.name ,
         price : req.body.price,
-        images : req.file.filename
+        // images : req.file.filename
     }
     try {
         const product = await 
         Product.create(newProduct);
-        res.redirect('/list');
+        if ( !product ) { 
+            return res.status(400).json({
+                message : "Them san pham that bai ",
+            })
+        }
+        res.status(200).json({
+            message : "Them san pham thanh cong ",
+            data:product, 
+        })
     } catch (error) {
-        console.log(error);
+        return res.status (500).json({
+            message : error.message
+        })
     }
 }
 
 // Ham cap nhat 
 exports.update = async (req, res ) => { 
-    const id  = req.params.id;
     let newProduct = {
         name : req.body.name ,
         price : req.body.price,
-        images : req.file.filename
+        // images : req.file.filename
     }
     try {
-        const product = await Product.findByIdAndUpdate(id, newProduct);
-        res.redirect('/list');
+        const product = await Product.findByIdAndUpdate(req.params.id, req.body ,  newProduct);
+       if(!product) { 
+           return res.status(400).json({
+               message : "Cap nhat san pham that bai ",
+           })
+       }
+       return res.status(200).json({
+           message : "Cap nhat san pham thanh cong ",
+           data : newProduct,
+       })
     } catch (error) {
-        console.log(error);
+        return res.status(500).json({
+            message : error.message
+        })
     }
 }
 
 // Xoa san pham
 exports.delete = async (req, res ) => {
-    const id = req.params.id;
     try {
-        const product = await Product.findByIdAndDelete(id);
-        res.redirect('/list');
+        const data = await Product.findByIdAndDelete(req.params.id);
+        if(!data) {
+            return res.status(400).json({
+                message : "Xoa san pham that bai ",
+            })
+        }
+        return res.status(200).json({
+            message : "Xoa san pham thanh cong ",
+            data : data,
+        })
     } catch (error) {
-        console.log(error);
+       return res.status(500).json({
+        message : error.message
+       })
     }
 }

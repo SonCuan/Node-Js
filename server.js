@@ -9,6 +9,7 @@ app.set('view engine', 'ejs');
 app.set ('views', './views');
 app.use(express.static('public'));
 app.use(express.urlencoded({extended: true}));
+app.use(express.json());
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -22,12 +23,12 @@ const upload = multer({storage: storage});
 
 mongoose.connect('mongodb://127.0.0.1:27017/Web503')
     .then(result => {
-        app.get('/list', ProductControllers.getList);
-        app.get('/create', ProductControllers.create);
-        app.get('/update/:id', ProductControllers.getDetail);
-        app.post('/save',upload.single('images'), ProductControllers.save);
-        app.post('/update/:id',upload.single('images'), ProductControllers.update);
-        app.get('/delete/:id', ProductControllers.delete);
+        app.get('/product', ProductControllers.getList);
+        // app.post('/product', ProductControllers.create); // tao san pham moi bang phuong thuc post 
+        app.get('/product/:id', ProductControllers.getDetail);
+        app.post('/product',upload.single('images'), ProductControllers.save); // them san pham 
+        app.put('/product/:id',upload.single('images'), ProductControllers.update);
+        app.delete('/product/:id', ProductControllers.delete);
         app.listen(port, () => {
             console.log(`running in port ${port}`);
         })
