@@ -15,7 +15,9 @@ exports.getList = async (req, res) => {
             data : products,
         })
     } catch (error) {
-        console.log(error);
+       return res.status(500).json({
+        message : error.message 
+       })
     }
 }
 
@@ -51,7 +53,7 @@ exports.save = async ( req, res ) => {
     const newProduct = {
         name : req.body.name ,
         price : req.body.price,
-        // images : req.file.filename
+        images : req.body.images
     }
     try {
         const product = await 
@@ -77,7 +79,7 @@ exports.update = async (req, res ) => {
     let newProduct = {
         name : req.body.name ,
         price : req.body.price,
-        // images : req.file.filename
+        images : req.body.images
     }
     try {
         const product = await Product.findByIdAndUpdate(req.params.id, req.body ,  newProduct);

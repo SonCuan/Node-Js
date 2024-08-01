@@ -1,6 +1,7 @@
 const express = require ('express');
 const mongoose = require('mongoose');
 const ProductControllers = require('./controllers/ProductControllers');
+const UserControllers = require('./controllers/UresControllers');
 var  multer = require('multer');
 
 const app =  express();
@@ -29,6 +30,9 @@ mongoose.connect('mongodb://127.0.0.1:27017/Web503')
         app.post('/product',upload.single('images'), ProductControllers.save); // them san pham 
         app.put('/product/:id',upload.single('images'), ProductControllers.update);
         app.delete('/product/:id', ProductControllers.delete);
+        // register and login 
+        app.post('/register', UserControllers.register);
+        app.post('/login', UserControllers.login);
         app.listen(port, () => {
             console.log(`running in port ${port}`);
         })
