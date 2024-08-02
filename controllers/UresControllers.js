@@ -1,7 +1,7 @@
 const User = require('../models/UserModels.js');  
 const bcryptjs = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-
+const redirect = require('express/lib/response');
 exports.register = async (req , res ) => { 
     try {
         const data = {
@@ -23,9 +23,10 @@ exports.register = async (req , res ) => {
         // Xoa password trong ket qua tra ve
         user.password  = undefined;
         // Thong bao cho nguoi dung 
-        return res.status(200).json ( { 
-            message : "Dang ky thanh cong",
-        })
+        // return res.status(200).json ( { 
+        //     message : "Dang ky thanh cong",
+        // })
+        res.redirect('/formlogin');
     } catch (error) {
         res.status(500).json({message : error.message});
     }
@@ -46,14 +47,30 @@ exports.login = async (req, res ) => {
         }
         const  accesToken =  jwt.sign({_id: user._id},'BoCuanViDai' , {expiresIn : '7d'});
         user.password = undefined;
-        return res.status(200).json({
-            message : "Dang nhap thanh cong",
-            user : user,
-            accesToken : accesToken
-        })
+        // return res.status(200).json({
+        //     message : "Dang nhap thanh cong",
+        //     user : user,
+        //     accesToken : accesToken
+        // })
+        res.redirect('/product');
     } catch (error) {
         res.status(500).json({
             message : error.message
         })
+    }
+}
+
+exports.formlogin = async (req, res ) => { 
+    try {
+        res.render("login");
+    } catch (error) {
+        res.status(500).json({message : error.message});
+    }
+}
+exports.formregister = async (req, res ) => { 
+    try {
+        res.render("register");     
+    } catch (error) {
+        res.status(500).json({message : error.message});
     }
 }
