@@ -33,10 +33,11 @@ mongoose.connect('mongodb://127.0.0.1:27017/Web503')
         // register and login 
         app.post('/register', UserControllers.register);
         app.post('/login', UserControllers.login);
-        // login and register anh html 
+        // login and register and html 
         app.get("/formlogin" , UserControllers.formlogin);
         app.get("/formregister" , UserControllers.formregister);
-        
+        // list san pham 
+        app.get("/list" , ProductControllers.listproducts);
         app.listen(port, () => {
             console.log(`running in port ${port}`);
         })

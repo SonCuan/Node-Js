@@ -52,7 +52,7 @@ exports.login = async (req, res ) => {
         //     user : user,
         //     accesToken : accesToken
         // })
-        res.redirect('/product');
+        res.redirect('/list');
     } catch (error) {
         res.status(500).json({
             message : error.message

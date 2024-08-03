@@ -118,3 +118,14 @@ exports.delete = async (req, res ) => {
        })
     }
 }
+
+// Phan get list 
+exports.listproducts = async (req, res) => {
+    try {
+        const products = await Product.find();
+        
+        res.render('list' , {pros : products});
+    } catch (error) {
+        res.status(500).json({message : error.message})
+    } 
+}
